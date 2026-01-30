@@ -1,0 +1,26 @@
+.admin-page {
+  display: flex;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.boards-area {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px;
+   width: 260px;          /* same size as board cards */
+  flex-shrink: 0;
+  gap: 20px;
+  background: #f4f5f7;
+  overflow-y: auto;
+}
+
+/* optional scrollbar style */
+.boards-area::-webkit-scrollbar {
+  width: 6px;
+}
+.boards-area::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}

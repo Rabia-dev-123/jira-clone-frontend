@@ -1,0 +1,50 @@
+/* Notification.css */
+.notification {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10000;
+  animation: slideIn 0.3s ease-out;
+}
+
+.notification-icon {
+  background-color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.notification.success .notification-icon {
+  color: #00875A;
+}
+
+.notification.error .notification-icon {
+  color: #DE350B;
+}
+
+.notification.info .notification-icon {
+  color: #0052CC;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

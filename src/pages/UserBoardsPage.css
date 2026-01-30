@@ -1,0 +1,399 @@
+/* UserBoardsPage.css */
+.user-boards-container {
+  min-height: 100vh;
+  background: #f5f5f5;
+   padding-top: 140px; 
+}
+/* Add to UserBoardsPage.css */
+.loading-message {
+  text-align: center;
+  padding: 40px;
+  color: #6B778C;
+  font-size: 16px;
+}
+/* Sticky container for filter controls */
+.fixed-filter-controls {
+  position: fixed;
+  top: 70px; /* Height of header */
+  left: 0;
+  right: 0;
+  z-index: 900;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Filter Controls Bar */
+.filter-controls-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 15px 20px;
+  background: white;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Board Search Container (200px fixed width) */
+.board-search-container {
+  position: relative;
+  width: 200px;
+  flex-shrink: 0;
+}
+
+/* Font Awesome search icon */
+.search-icon-gray {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b778c;
+  font-size: 14px;
+}
+
+.board-search-input {
+  width: 100%;
+  padding: 8px 12px 8px 36px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  background: #fafbfc;
+  transition: all 0.2s;
+}
+
+.board-search-input:focus {
+  outline: none;
+  border-color: #4c9aff;
+  background: white;
+  box-shadow: 0 0 0 2px rgba(76, 154, 255, 0.2);
+}
+
+.board-search-input::placeholder {
+  color: #6b778c;
+}
+
+/* Users Filter Wrapper */
+.users-filter-wrapper {
+  flex: 1;
+  position: relative;
+  min-width: 0; /* Important for flex overflow */
+}
+
+.users-filter-container {
+  display: flex;
+  gap: 0; /* No gap between icons - they'll be merged */
+  padding: 6px 0;
+  padding-left: 50px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  cursor: grab;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.users-filter-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+.users-filter-container.grabbing {
+  cursor: grabbing;
+  user-select: none;
+}
+
+/* User Filter Icon */
+.user-filter-icon {
+  position: relative;
+  margin-left: -12px; /* Overlap icons */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  z-index: 1;
+}
+
+.user-filter-icon:first-child {
+  margin-left: 0;
+}
+
+.user-filter-icon:hover {
+  transform: translateY(-4px) scale(1.1);
+  z-index: 2;
+}
+
+.user-filter-icon.selected {
+  transform: translateY(-6px) scale(1.15);
+  z-index: 3;
+}
+
+.user-filter-icon.selected:hover {
+  transform: translateY(-6px) scale(1.15);
+}
+
+.icon-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
+}
+
+.user-filter-icon .icon-avatar {
+  background: var(--user-color, #2196F3);
+}
+
+.user-filter-icon:hover .icon-avatar {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.user-filter-icon.selected .icon-avatar {
+  border-color: #4c9aff;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+}
+/* Success Notification Styles */
+.success-notification {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: #36B37E;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(54, 179, 126, 0.3);
+  z-index: 1000;
+  animation: slideInLeft 0.3s ease;
+  max-width: 400px;
+  font-size: 14px;
+}
+
+.success-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.success-icon {
+  background: white;
+  color: #36B37E;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.close-notification {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  margin-left: auto;
+  padding: 0 4px;
+  line-height: 1;
+  opacity: 0.8;
+}
+
+.close-notification:hover {
+  opacity: 1;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+/* Clear filter button on the right side */
+.clear-filter-btn-right {
+  padding: 8px 16px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.2s;
+  margin-left: auto; /* Pushes to the right */
+}
+
+.clear-filter-btn-right:hover {
+  background: #c82333;
+}
+
+/* Active filter info - reduced width */
+/* Active filter info positioning */
+.active-filter-info {
+  width: 310px;
+  margin: 8px auto 0 auto;
+  padding: 10px 16px;
+  background: #e3f2fd;
+  border-radius: 4px;
+  color: #1565c0;
+  font-size: 13px;
+  box-shadow: 0 2px 4px rgba(21, 101, 192, 0.1);
+  position: relative;
+  z-index: 801;
+}
+
+.active-filter-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.clear-filter-btn-inline {
+  background: none;
+  border: none;
+  color: #1565c0;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.clear-filter-btn-inline:hover {
+  background: rgba(21, 101, 192, 0.1);
+}
+
+/* Boards main area */
+.boards-main-area {
+  padding: 20px;
+  min-height: calc(100vh - 140px);
+ 
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .filter-controls-bar {
+    padding: 12px 15px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  
+  .board-search-container {
+    width: 180px;
+  }
+  
+  .icon-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 12px;
+  }
+  
+  .clear-filter-btn-right {
+    padding: 6px 12px;
+    font-size: 13px;
+    margin-left: 0;
+  }
+  
+  .active-filter-info {
+    width: 280px;
+    margin: 6px auto 0 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .board-search-container {
+    width: 150px;
+  }
+  
+  .icon-avatar {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .active-filter-info {
+    width: 250px;
+    font-size: 12px;
+  }
+}
+/* ADD THESE STYLES TO THE END OF UserBoardsPage.css */
+
+/* User filter colors - use CSS variable */
+.user-filter-icon .icon-avatar {
+  background: var(--user-color, #0052CC);
+}
+
+/* Active filter info - Position as tooltip */
+.active-filter-info-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.active-filter-info {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  min-width: 280px;
+  max-width: 400px;
+  padding: 10px 16px;
+  background: #e3f2fd;
+  border-radius: 4px;
+  color: #1565c0;
+  font-size: 13px;
+  box-shadow: 0 2px 8px rgba(21, 101, 192, 0.2);
+  z-index: 801;
+  margin-top: 8px;
+  animation: fadeIn 0.2s ease;
+  border: 1px solid #bbdefb;
+}
+
+/* Add a small arrow pointing up */
+.active-filter-info::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid #e3f2fd;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Responsive updates for new active filter */
+@media (max-width: 768px) {
+  .active-filter-info {
+    min-width: 250px;
+    margin-top: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .active-filter-info {
+    min-width: 220px;
+    font-size: 12px;
+  }
+}

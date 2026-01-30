@@ -1,0 +1,28 @@
+.sidebar {
+  width: 200px;
+  background: #fff;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 20px;
+}
+
+.sidebar button {
+  padding: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-weight: 600;
+}
+
+.sidebar .logout {
+  margin-top: auto;
+  color: white;
+  background-color: #DD3B4B;
+  padding: 16px 12px;
+  border-radius: 2px;
+  text-align: center;
+  font-size: 16px;
+}

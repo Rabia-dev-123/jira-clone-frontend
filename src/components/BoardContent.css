@@ -1,0 +1,36 @@
+.board-content {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  overflow-x: auto;
+}
+
+.column {
+  background-color: #ebecf0;
+  padding: 10px;
+  border-radius: 6px;
+  min-width: 250px;
+}
+
+.column h4 {
+  margin-bottom: 10px;
+}
+
+.column.new-column input {
+  width: 100%;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  margin-bottom: 6px;
+}
+
+.column.new-column button {
+  width: 100%;
+  padding: 6px;
+  border-radius: 4px;
+  border: none;
+  background-color: #0052cc;
+  color: white;
+  cursor: pointer;
+}
+

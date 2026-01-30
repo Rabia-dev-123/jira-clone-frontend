@@ -1,0 +1,153 @@
+/* Header.css */
+.jira-header {
+  height: 70px;
+  background: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px 0 0;
+  border-bottom: 1px solid #ddd;
+  font-family: Arial, sans-serif;
+  position: fixed; /* Add this */
+  top: 0; /* Add this */
+  left: 0; /* Add this */
+  right: 0; /* Add this */
+  z-index: 1000; /* Add this to ensure it stays on top */
+}
+.divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.2);
+}
+.username{
+  font-weight: 600;
+  font-size: 15px;
+}
+.left {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+.jira-logo-svg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+    margin-left: 30px;
+
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+/* CENTER: Search + Create */
+.center {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-grow: 1;
+  justify-content: center; /* center horizontally */
+}
+
+.search-bar {
+  padding: 6px 12px 6px 32px; 
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  outline: none;
+  width: 720px;
+  font-size: 14px;
+  height: 20px;
+  margin-bottom: 0;
+}
+.search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+/* Search icon */
+.search-icon {
+  position: absolute;
+  left: 10px;
+  font-size: 14px;
+  color: #6b778c;
+  pointer-events: none;
+ 
+}
+.create-btn-blue {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-radius: 4px;
+  border: none;
+  background-color: #0052cc; /* Jira blue */
+  font-weight: 400;
+  cursor: pointer;
+  font-size: 16px;
+  color: #fff;
+}
+
+/* Plus icon inside button */
+.plus-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.create-btn-blue:hover {
+  background-color: #0747a6;
+}
+
+.right {
+  position: relative;
+ 
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  background: #DE350B;
+  color: white;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.dropdown {
+  position: absolute;
+  right: 0;
+  top: 44px;
+  width: 220px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  padding: 8px;
+}
+
+.dropdown button {
+  width: 100%;
+  padding: 8px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown button:hover {
+  background: #f4f5f7;
+}
+
+.email {
+  font-size: 13px;
+  padding: 6px;
+  color: #555;
+}
+
+.logout {
+  color: red;
+}

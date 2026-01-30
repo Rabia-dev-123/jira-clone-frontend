@@ -1,0 +1,171 @@
+/* Board.css - Single Column Per Board */
+.board-card {
+  background: #FFFFFF;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(9, 30, 66, 0.08);
+  border: 1px solid #DFE1E6;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  height: 450px;
+}
+
+.board-card:hover {
+  box-shadow: 0 4px 16px rgba(9, 30, 66, 0.12);
+  transform: translateY(-2px);
+}
+
+.board-header {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #DFE1E6;
+  min-height: 70px;
+}
+
+.board-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #172B4D;
+  margin: 0;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.board-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.board-status {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.task-count {
+  font-size: 12px;
+  color: #6B778C;
+}
+
+/* Status-specific colors */
+.board-card[data-status="todo"] .board-header {
+  background: #FFFAE6;
+  border-left: 4px solid #FFAB00;
+}
+
+.board-card[data-status="todo"] .board-status {
+  background: #FFEBE6;
+  color: #DE350B;
+}
+
+.board-card[data-status="inprogress"] .board-header {
+  background: #E3FCEF;
+  border-left: 4px solid #36B37E;
+}
+
+.board-card[data-status="inprogress"] .board-status {
+  background: #DEEBFF;
+  color: #0052CC;
+}
+
+.board-card[data-status="done"] .board-header {
+  background: #E6FCFF;
+  border-left: 4px solid #00B8D9;
+}
+
+.board-card[data-status="done"] .board-status {
+  background: #E3FCEF;
+  color: #006644;
+}
+
+.board-card[data-status="empty"] .board-header {
+  background: #F4F5F7;
+  border-left: 4px solid #C1C7D0;
+}
+
+.board-card[data-status="empty"] .board-status {
+  background: #DFE1E6;
+  color: #6B778C;
+}
+
+.board-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  background: #FAFBFC;
+}
+
+.board-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.empty-board {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6B778C;
+  font-size: 14px;
+  font-style: italic;
+  text-align: center;
+  padding: 40px 20px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
+  border: 2px dashed #DFE1E6;
+}
+
+/* Custom scrollbar */
+.board-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.board-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.board-content::-webkit-scrollbar-thumb {
+  background: #C1C7D0;
+  border-radius: 3px;
+}
+
+.board-content::-webkit-scrollbar-thumb:hover {
+  background: #B3BAC5;
+}
+
+/* Drag and Drop Styles */
+.board-card.drag-over {
+  border: 2px dashed #4c9aff !important;
+  background: rgba(222, 235, 255, 0.3) !important;
+  transform: translateY(-4px);
+  transition: all 0.2s ease;
+}
+
+.board-card.drag-over .board-content {
+  background: rgba(222, 235, 255, 0.1);
+}
+
+.board-card.drag-over .empty-board {
+  background: rgba(222, 235, 255, 0.5);
+  border-color: #4c9aff;
+  color: #0052cc;
+}
+
+/* Make empty board area more prominent for drop */
+.board-card .empty-board {
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
