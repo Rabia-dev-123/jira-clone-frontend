@@ -35,7 +35,7 @@ export default function BoardCard({ board, handleDelete, setNotification }) {
 
       <div className="board-column">
         <span className="column-label">Column</span>
-        <span className="column-value">{board.column || "To Do"}</span>
+        <span className="column-value">{board.column}</span>
       </div>
     </div>
   );
