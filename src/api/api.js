@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://jira-rails-backend-production.up.railway.app/api/v1",
+  baseURL: "https://web-production-45cea.up.railway.app/api/v1",
   withCredentials: true, // needed for session cookies
 });
 
@@ -10,7 +10,7 @@ const API = axios.create({
 // api.js
 export const signupUser = async (userData) => {
   try {
-    const response = await fetch('https://jira-rails-backend-production.up.railway.app/api/v1/signup', {
+    const response = await fetch('https://web-production-45cea.up.railway.app/api/v1/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

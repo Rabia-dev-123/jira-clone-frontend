@@ -35,7 +35,7 @@ function AdminBoardsPage({setNotification}) {
 
   const fetchBoards = async () => {
     try {
-      const response = await fetch("https://jira-rails-backend-production.up.railway.app/api/v1/boards");
+      const response = await fetch("https://web-production-45cea.up.railway.app/api/v1/boards");
       const data = await response.json();
       
       // Check if data is an array
@@ -66,7 +66,7 @@ const addBoard = async (newBoard) => {
     };
     
     try {
-      const response = await fetch("https://jira-rails-backend-production.up.railway.app/api/v1/boards", {
+      const response = await fetch("https://web-production-45cea.up.railway.app/api/v1/boards", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -100,7 +100,7 @@ const removeBoard = async (boardId) => {
   try {
     console.log(`🔄 Deleting board ${boardId} from backend...`);
     
-    const response = await fetch(`https://jira-rails-backend-production.up.railway.app/api/v1/boards/${boardId}`, {
+    const response = await fetch(`https://web-production-45cea.up.railway.app/api/v1/boards/${boardId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

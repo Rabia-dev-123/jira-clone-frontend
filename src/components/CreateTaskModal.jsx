@@ -30,7 +30,7 @@ export default function CreateTaskModal({ open, onClose, users = [], boards = []
   // Fetch columns when board changes
   useEffect(() => {
     if (selectedBoard) {
-      fetch(`https://jira-rails-backend-production.up.railway.app/api/v1/boards/${selectedBoard}/columns`)
+      fetch(`https://web-production-45cea.up.railway.app/api/v1/boards/${selectedBoard}/columns`)
         .then(res => res.json())
         .then(data => setColumns(data))
         .catch(err => console.error("Failed to fetch columns:", err));

@@ -12,7 +12,7 @@ export default function UsersTable() {
   // Fetch users from Rails API
   useEffect(() => {
     setLoading(true);
-    fetch("https://jira-rails-backend-production.up.railway.app/api/v1/users") // Changed from /admin to /users
+    fetch("https://web-production-45cea.up.railway.app/api/v1/users") // Changed from /admin to /users
       .then((res) => {
         if (!res.ok) {
           throw new Error(`Failed to fetch users: ${res.status}`);
@@ -26,7 +26,7 @@ export default function UsersTable() {
       .catch((err) => {
         console.error("Error fetching users:", err);
         // Fallback to admin endpoint if /users doesn't work
-        fetch("https://jira-rails-backend-production.up.railway.app/api/v1/admin")
+        fetch("https://web-production-45cea.up.railway.app/api/v1/admin")
           .then((res) => res.json())
           .then((data) => setUsers(data.users || data))
           .catch((err2) => console.error("Both endpoints failed:", err2));
@@ -38,7 +38,7 @@ export default function UsersTable() {
   const handleRoleChange = (id, newRole) => {
     setUpdatingUserId(id);
     
-    fetch(`https://jira-rails-backend-production.up.railway.app/api/v1/users/${id}`, {
+    fetch(`https://web-production-45cea.up.railway.app/api/v1/users/${id}`, {
       method: "PATCH",
       headers: { 
         "Content-Type": "application/json",
@@ -74,7 +74,7 @@ export default function UsersTable() {
   const handleDelete = (id) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     
-    fetch(`https://jira-rails-backend-production.up.railway.app/api/v1/users/${id}`, { 
+    fetch(`https://web-production-45cea.up.railway.app/api/v1/users/${id}`, { 
       method: "DELETE",
       credentials: "include",
     })

@@ -54,11 +54,11 @@ export default function UserBoardsPage({setNotification }) {
       setIsLoading(true);
       
       // Fetch boards
-      const resBoards = await fetch("https://jira-rails-backend-production.up.railway.app/api/v1/boards");
+      const resBoards = await fetch("https://web-production-45cea.up.railway.app/api/v1/boards");
       const boardsData = await resBoards.json();
 
       // Fetch users
-      const usersRes = await fetch("https://jira-rails-backend-production.up.railway.app/api/v1/users");
+      const usersRes = await fetch("https://web-production-45cea.up.railway.app/api/v1/users");
       const usersData = await usersRes.json();
       setUsers(usersData);
 
@@ -67,7 +67,7 @@ export default function UserBoardsPage({setNotification }) {
         boardsData.map(async (board) => {
           // Fetch columns for this board
           const resCols = await fetch(
-            `https://jira-rails-backend-production.up.railway.app/api/v1/boards/${board.id}/columns`
+            `https://web-production-45cea.up.railway.app/api/v1/boards/${board.id}/columns`
           );
           const colsData = await resCols.json();
           
@@ -77,7 +77,7 @@ export default function UserBoardsPage({setNotification }) {
           if (column) {
             // Fetch tasks for this column
             const resTasks = await fetch(
-              `https://jira-rails-backend-production.up.railway.app/api/v1/boards/${board.id}/columns/${column.id}/tasks`
+              `https://web-production-45cea.up.railway.app/api/v1/boards/${board.id}/columns/${column.id}/tasks`
             );
             const tasksData = await resTasks.json();
             
@@ -114,7 +114,7 @@ export default function UserBoardsPage({setNotification }) {
 // In UserBoardsPage.js - Update handleCreateTask function
 const handleCreateTask = (taskData) => {
   fetch(
-    `https://jira-rails-backend-production.up.railway.app/api/v1/boards/${taskData.board_id}/columns/${taskData.column_id}/tasks`,
+    `https://web-production-45cea.up.railway.app/api/v1/boards/${taskData.board_id}/columns/${taskData.column_id}/tasks`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -177,7 +177,7 @@ const handleTaskDrop = async (dropData) => {
   
   try {
     const response = await fetch(
-      `https://jira-rails-backend-production.up.railway.app/api/v1/boards/${sourceBoardId}/columns/${sourceColumnId}/tasks/${taskId}`,
+      `https://web-production-45cea.up.railway.app/api/v1/boards/${sourceBoardId}/columns/${sourceColumnId}/tasks/${taskId}`,
       {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },

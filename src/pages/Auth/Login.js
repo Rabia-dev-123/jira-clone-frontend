@@ -21,7 +21,7 @@ const Login = ({ setNotification }) => {
     setError("");
     
     try {
-      const response = await fetch('https://jira-rails-backend-production.up.railway.app/api/v1/login', {
+      const response = await fetch('https://web-production-45cea.up.railway.app/api/v1/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
