@@ -5,7 +5,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 // BoardCard.js - Fixed with proper alert
 // BoardCard.js - Optional: Add board ID display
-export default function BoardCard({ board, handleDelete, setNotification }) {
+export default function BoardCard({ board, handleDelete, setNotification, getColumnName }) {
   const handleDeleteClick = () => {
     if (window.confirm(`Are you sure you want to delete board "${board.title}"?`)) {
       if (setNotification) {
@@ -17,7 +17,12 @@ export default function BoardCard({ board, handleDelete, setNotification }) {
       handleDelete(board.id);
     }
   };
-
+ const getColumnName = () => {
+    if (board.columns && board.columns.length > 0) {
+      return board.columns[0].title;
+    }
+    return "To Do"; // Fallback
+  };
   return (
     <div className="board-card">
       <div className="board-header">
@@ -35,7 +40,7 @@ export default function BoardCard({ board, handleDelete, setNotification }) {
 
       <div className="board-column">
         <span className="column-label">Column</span>
-        <span className="column-value">{board.column}</span>
+        <span className="column-value">{getColumnName()}</span>
       </div>
     </div>
   );
