@@ -73,7 +73,6 @@ useEffect(() => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login setNotification={setNotification} />} />
         <Route path="/profile" element={<ProfilePage />} />
-      // In App.js - Pass setNotification to AdminBoardsPage
 <Route path="/admin" element={<AdminBoardsPage setNotification={setNotification} />} />
       <Route path="/user" element={<UserBoardsPage setNotification={setNotification} />} />
       </Routes>

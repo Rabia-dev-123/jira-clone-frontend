@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect,  } from "react";
 import Header from "../components/Header";
 import BoardsGrid from "../components/BoardsGrid";
 import CreateTaskModal from "../components/CreateTaskModal";
