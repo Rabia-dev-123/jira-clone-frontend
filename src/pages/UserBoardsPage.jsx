@@ -234,28 +234,23 @@ const handleTaskDrop = async (dropData) => {
         }
         
      // 2. Add task to target board (INSIDE handleTaskDrop function)
+// 2. Add task to target board USING THE API RESPONSE
 const targetBoardIndex = newBoards.findIndex(b => b.id === targetBoardId);
 if (targetBoardIndex !== -1 && newBoards[targetBoardIndex].columns[0]) {
-  // Find the original task
-  const originalSourceBoard = prevBoards.find(b => b.id === sourceBoardId);
-  const originalTask = originalSourceBoard?.columns[0]?.tasks.find(t => t.id === taskId);
+  // Use the task returned from API (result) which has updated column_id
+  const updatedTask = {
+    ...result,
+    board_id: targetBoardId, // Ensure board_id is correct
+    user: result.user || null // Preserve user data
+  };
   
-  if (originalTask) {
-    // *** CRITICAL FIX: Update BOTH the board_id and column_id ***
-    const taskWithUpdates = {
-      ...originalTask,
-      board_id: targetBoardId,  // Ensure this is updated to the NEW board
-      column_id: targetColumnId
-    };
-    
-    newBoards[targetBoardIndex] = {
-      ...newBoards[targetBoardIndex],
-      columns: [{
-        ...newBoards[targetBoardIndex].columns[0],
-        tasks: [...newBoards[targetBoardIndex].columns[0].tasks, taskWithUpdates]
-      }]
-    };
-  }
+  newBoards[targetBoardIndex] = {
+    ...newBoards[targetBoardIndex],
+    columns: [{
+      ...newBoards[targetBoardIndex].columns[0],
+      tasks: [...newBoards[targetBoardIndex].columns[0].tasks, updatedTask]
+    }]
+  };
 }
         return newBoards;
       });
