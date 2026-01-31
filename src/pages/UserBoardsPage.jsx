@@ -176,19 +176,18 @@ const handleTaskDrop = async (dropData) => {
   });
   
   try {
-    // FIX: Use the correct endpoint from your routes
+    // FIX: Use the correct endpoint - remove the board/column nesting
     const response = await fetch(
-      `https://web-production-45cea.up.railway.app/api/v1/boards/${sourceBoardId}/columns/${sourceColumnId}/tasks/${taskId}/move`,
+      `https://web-production-45cea.up.railway.app/api/v1/tasks/${taskId}/move`, // ← Changed this!
       {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
-          column_id: targetColumnId  // Send only column_id
+          column_id: targetColumnId
         }),
       }
     );
     
-    // Rest of your code...
     console.log("API response status:", response.status);
     
     const result = await response.json();
@@ -197,61 +196,69 @@ const handleTaskDrop = async (dropData) => {
     if (response.ok) {
       console.log("✅ Task moved successfully:", result);
       
-      // Update local state
+      // Update local state - CRITICAL: Make sure to update BOTH board_id and column_id
       setBoards(prevBoards => {
         const newBoards = [...prevBoards];
         
         // 1. Remove task from source board
-        const sourceBoardIndex = newBoards.findIndex(b => b.id === sourceBoardId);
+        const sourceBoardIndex = newBoards.findIndex(b => b.id == sourceBoardId);
         if (sourceBoardIndex !== -1 && newBoards[sourceBoardIndex].columns[0]) {
           newBoards[sourceBoardIndex] = {
             ...newBoards[sourceBoardIndex],
             columns: [{
               ...newBoards[sourceBoardIndex].columns[0],
-              tasks: newBoards[sourceBoardIndex].columns[0].tasks.filter(t => t.id !== taskId)
+              tasks: newBoards[sourceBoardIndex].columns[0].tasks.filter(t => t.id != taskId)
             }]
           };
         }
         
-     // 2. Add task to target board (INSIDE handleTaskDrop function)
-const targetBoardIndex = newBoards.findIndex(b => b.id === targetBoardId);
-if (targetBoardIndex !== -1 && newBoards[targetBoardIndex].columns[0]) {
-  // Find the original task
-  const originalSourceBoard = prevBoards.find(b => b.id === sourceBoardId);
-  const originalTask = originalSourceBoard?.columns[0]?.tasks.find(t => t.id === taskId);
-  
-  if (originalTask) {
-    // *** CRITICAL FIX: Update BOTH the board_id and column_id ***
-    const taskWithUpdates = {
-      ...originalTask,
-      board_id: targetBoardId,  // Ensure this is updated to the NEW board
-      column_id: targetColumnId
-    };
-    
-    newBoards[targetBoardIndex] = {
-      ...newBoards[targetBoardIndex],
-      columns: [{
-        ...newBoards[targetBoardIndex].columns[0],
-        tasks: [...newBoards[targetBoardIndex].columns[0].tasks, taskWithUpdates]
-      }]
-    };
-  }
-}
+        // 2. Add task to target board
+        const targetBoardIndex = newBoards.findIndex(b => b.id == targetBoardId);
+        if (targetBoardIndex !== -1 && newBoards[targetBoardIndex].columns[0]) {
+          // Find the original task
+          const originalSourceBoard = prevBoards.find(b => b.id == sourceBoardId);
+          const originalTask = originalSourceBoard?.columns[0]?.tasks.find(t => t.id == taskId);
+          
+          if (originalTask) {
+            // Update task with new board_id and column_id
+            const taskWithUpdates = {
+              ...originalTask,
+              board_id: parseInt(targetBoardId),  // Ensure proper type
+              column_id: parseInt(targetColumnId)
+            };
+            
+            newBoards[targetBoardIndex] = {
+              ...newBoards[targetBoardIndex],
+              columns: [{
+                ...newBoards[targetBoardIndex].columns[0],
+                tasks: [...newBoards[targetBoardIndex].columns[0].tasks, taskWithUpdates]
+              }]
+            };
+          }
+        }
+        
         return newBoards;
       });
       
       console.log("✅ Local state updated");
+      
+      // Refresh data to ensure consistency
+      setTimeout(() => {
+        fetchData();
+      }, 100);
+      
     } else {
       console.error("❌ Failed to move task. Error details:", result);
       
-      // Show specific error message
       if (result.errors && result.errors.length > 0) {
-        console.error("Validation errors:", result.errors.join(", "));
         alert(`Cannot move task: ${result.errors.join(", ")}`);
+      } else {
+        alert("Failed to move task. Please try again.");
       }
     }
   } catch (error) {
     console.error("❌ Error moving task:", error);
+    alert("Error moving task: " + error.message);
   }
 };
   const handleClearFilter = () => {
