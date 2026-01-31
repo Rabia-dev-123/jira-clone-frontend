@@ -17,7 +17,7 @@ export default function BoardCard({ board, handleDelete, setNotification }) {
       handleDelete(board.id);
     }
   };
-
+  const columnName = board.columns && board.columns[0] ? board.columns[0].title : "To Do";
   return (
     <div className="board-card">
       <div className="board-header">
@@ -35,7 +35,7 @@ export default function BoardCard({ board, handleDelete, setNotification }) {
 
       <div className="board-column">
         <span className="column-label">Column</span>
-        <span className="column-value">{board.column || "To Do"}</span>
+        <span className="column-value">{columnName}</span>
       </div>
     </div>
   );
