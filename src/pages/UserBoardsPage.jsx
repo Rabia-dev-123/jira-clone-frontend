@@ -163,11 +163,10 @@ const handleCreateTask = (taskData) => {
 };
 
   // Handle task drop between boards
-// Handle task drop between boards
 const handleTaskDrop = async (dropData) => {
   let { taskId, sourceColumnId, targetColumnId, sourceBoardId, targetBoardId } = dropData;
   
-  console.log("Moving task:", {
+  console.log("Moving task between boards:", {
     taskId,
     fromBoard: sourceBoardId,
     toBoard: targetBoardId,
@@ -175,28 +174,44 @@ const handleTaskDrop = async (dropData) => {
     toColumn: targetColumnId
   });
   
+  // FIX: If moving to different board, use special endpoint
+  const isMovingBetweenBoards = sourceBoardId !== targetBoardId;
+  
   try {
-    // ✅ CORRECT: Use the top-level move route
-    const response = await fetch(
-      `https://web-production-45cea.up.railway.app/api/v1/tasks/${taskId}/move`, // ← CHANGED!
-      {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          column_id: targetColumnId
-        }),
-      }
-    );
+    let response;
     
-    console.log("API response status:", response.status);
-    console.log("Response headers:", response.headers);
-    
-    // Check if response is OK before parsing JSON
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Error response text:", errorText);
-      throw new Error(`HTTP ${response.status}: ${errorText}`);
+    if (isMovingBetweenBoards) {
+      // Moving between DIFFERENT boards - needs special handling
+      response = await fetch(
+        `https://web-production-45cea.up.railway.app/api/v1/tasks/${taskId}/move_between_boards`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            task: { 
+              column_id: targetColumnId,
+              board_id: targetBoardId  // Send both board AND column ID
+            } 
+          }),
+        }
+      );
+    } else {
+      // Moving within SAME board - use existing endpoint
+      response = await fetch(
+        `https://web-production-45cea.up.railway.app/api/v1/boards/${sourceBoardId}/columns/${sourceColumnId}/tasks/${taskId}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            task: { 
+              column_id: targetColumnId
+            } 
+          }),
+        }
+      );
     }
+
+    console.log("API response status:", response.status);
     
     const result = await response.json();
     console.log("API response body:", result);
@@ -209,59 +224,56 @@ const handleTaskDrop = async (dropData) => {
         const newBoards = [...prevBoards];
         
         // 1. Remove task from source board
-        const sourceBoardIndex = newBoards.findIndex(b => b.id == sourceBoardId);
+        const sourceBoardIndex = newBoards.findIndex(b => b.id === sourceBoardId);
         if (sourceBoardIndex !== -1 && newBoards[sourceBoardIndex].columns[0]) {
           newBoards[sourceBoardIndex] = {
             ...newBoards[sourceBoardIndex],
             columns: [{
               ...newBoards[sourceBoardIndex].columns[0],
-              tasks: newBoards[sourceBoardIndex].columns[0].tasks.filter(t => t.id != taskId)
+              tasks: newBoards[sourceBoardIndex].columns[0].tasks.filter(t => t.id !== taskId)
             }]
           };
         }
         
-        // 2. Add task to target board
-        const targetBoardIndex = newBoards.findIndex(b => b.id == targetBoardId);
-        if (targetBoardIndex !== -1 && newBoards[targetBoardIndex].columns[0]) {
-          // Find the original task
-          const originalSourceBoard = prevBoards.find(b => b.id == sourceBoardId);
-          const originalTask = originalSourceBoard?.columns[0]?.tasks.find(t => t.id == taskId);
-          
-          if (originalTask) {
-            // Update task with new board_id and column_id
-            const taskWithUpdates = {
-              ...originalTask,
-              board_id: parseInt(targetBoardId),
-              column_id: parseInt(targetColumnId)
-            };
-            
-            newBoards[targetBoardIndex] = {
-              ...newBoards[targetBoardIndex],
-              columns: [{
-                ...newBoards[targetBoardIndex].columns[0],
-                tasks: [...newBoards[targetBoardIndex].columns[0].tasks, taskWithUpdates]
-              }]
-            };
-          }
-        }
-        
+     // 2. Add task to target board (INSIDE handleTaskDrop function)
+const targetBoardIndex = newBoards.findIndex(b => b.id === targetBoardId);
+if (targetBoardIndex !== -1 && newBoards[targetBoardIndex].columns[0]) {
+  // Find the original task
+  const originalSourceBoard = prevBoards.find(b => b.id === sourceBoardId);
+  const originalTask = originalSourceBoard?.columns[0]?.tasks.find(t => t.id === taskId);
+  
+  if (originalTask) {
+    // *** CRITICAL FIX: Update BOTH the board_id and column_id ***
+    const taskWithUpdates = {
+      ...originalTask,
+      board_id: targetBoardId,  // Ensure this is updated to the NEW board
+      column_id: targetColumnId
+    };
+    
+    newBoards[targetBoardIndex] = {
+      ...newBoards[targetBoardIndex],
+      columns: [{
+        ...newBoards[targetBoardIndex].columns[0],
+        tasks: [...newBoards[targetBoardIndex].columns[0].tasks, taskWithUpdates]
+      }]
+    };
+  }
+}
         return newBoards;
       });
       
       console.log("✅ Local state updated");
+    } else {
+      console.error("❌ Failed to move task. Error details:", result);
       
-      // Optional: Refresh data after a delay
-      setTimeout(() => {
-        fetchData();
-      }, 500);
-      
+      // Show specific error message
+      if (result.errors && result.errors.length > 0) {
+        console.error("Validation errors:", result.errors.join(", "));
+        alert(`Cannot move task: ${result.errors.join(", ")}`);
+      }
     }
   } catch (error) {
     console.error("❌ Error moving task:", error);
-    alert(`Error moving task: ${error.message}`);
-    
-    // Revert by refreshing data
-    fetchData();
   }
 };
   const handleClearFilter = () => {
