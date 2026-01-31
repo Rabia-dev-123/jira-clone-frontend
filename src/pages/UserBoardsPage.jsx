@@ -176,9 +176,9 @@ const handleTaskDrop = async (dropData) => {
   });
   
   try {
-    // FIX: Use the correct endpoint - remove the board/column nesting
+    // ✅ CORRECT: Use the top-level move route
     const response = await fetch(
-      `https://web-production-45cea.up.railway.app/api/v1/tasks/${taskId}/move`, // ← Changed this!
+      `https://web-production-45cea.up.railway.app/api/v1/tasks/${taskId}/move`, // ← CHANGED!
       {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -189,6 +189,14 @@ const handleTaskDrop = async (dropData) => {
     );
     
     console.log("API response status:", response.status);
+    console.log("Response headers:", response.headers);
+    
+    // Check if response is OK before parsing JSON
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Error response text:", errorText);
+      throw new Error(`HTTP ${response.status}: ${errorText}`);
+    }
     
     const result = await response.json();
     console.log("API response body:", result);
@@ -196,7 +204,7 @@ const handleTaskDrop = async (dropData) => {
     if (response.ok) {
       console.log("✅ Task moved successfully:", result);
       
-      // Update local state - CRITICAL: Make sure to update BOTH board_id and column_id
+      // Update local state
       setBoards(prevBoards => {
         const newBoards = [...prevBoards];
         
@@ -223,7 +231,7 @@ const handleTaskDrop = async (dropData) => {
             // Update task with new board_id and column_id
             const taskWithUpdates = {
               ...originalTask,
-              board_id: parseInt(targetBoardId),  // Ensure proper type
+              board_id: parseInt(targetBoardId),
               column_id: parseInt(targetColumnId)
             };
             
@@ -242,23 +250,18 @@ const handleTaskDrop = async (dropData) => {
       
       console.log("✅ Local state updated");
       
-      // Refresh data to ensure consistency
+      // Optional: Refresh data after a delay
       setTimeout(() => {
         fetchData();
-      }, 100);
+      }, 500);
       
-    } else {
-      console.error("❌ Failed to move task. Error details:", result);
-      
-      if (result.errors && result.errors.length > 0) {
-        alert(`Cannot move task: ${result.errors.join(", ")}`);
-      } else {
-        alert("Failed to move task. Please try again.");
-      }
     }
   } catch (error) {
     console.error("❌ Error moving task:", error);
-    alert("Error moving task: " + error.message);
+    alert(`Error moving task: ${error.message}`);
+    
+    // Revert by refreshing data
+    fetchData();
   }
 };
   const handleClearFilter = () => {
