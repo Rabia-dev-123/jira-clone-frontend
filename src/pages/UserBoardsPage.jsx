@@ -180,22 +180,20 @@ const handleTaskDrop = async (dropData) => {
   try {
     let response;
     
-    if (isMovingBetweenBoards) {
-      // Moving between DIFFERENT boards - needs special handling
-      response = await fetch(
-        `https://web-production-45cea.up.railway.app/api/v1/tasks/${taskId}/move_between_boards`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
-            task: { 
-              column_id: targetColumnId,
-              board_id: targetBoardId  // Send both board AND column ID
-            } 
-          }),
-        }
-      );
-    } else {
+ if (isMovingBetweenBoards) {
+  // Use the existing move endpoint - it already handles board_id updates
+  response = await fetch(
+    `https://web-production-45cea.up.railway.app/api/v1/boards/${sourceBoardId}/columns/${sourceColumnId}/tasks/${taskId}/move`,
+    {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        column_id: targetColumnId
+        // Don't send board_id here - your move action already gets it from the column
+      }),
+    }
+  );
+} else {
       // Moving within SAME board - use existing endpoint
       response = await fetch(
         `https://web-production-45cea.up.railway.app/api/v1/boards/${sourceBoardId}/columns/${sourceColumnId}/tasks/${taskId}`,
