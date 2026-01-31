@@ -214,61 +214,52 @@ const handleTaskDrop = async (dropData) => {
     const result = await response.json();
     console.log("API response body:", result);
     
-    if (response.ok) {
-      console.log("✅ Task moved successfully:", result);
-      
-      // Update local state
-      setBoards(prevBoards => {
-        const newBoards = [...prevBoards];
-        
-        // 1. Remove task from source board
-        const sourceBoardIndex = newBoards.findIndex(b => b.id === sourceBoardId);
-        if (sourceBoardIndex !== -1 && newBoards[sourceBoardIndex].columns[0]) {
-          newBoards[sourceBoardIndex] = {
-            ...newBoards[sourceBoardIndex],
-            columns: [{
-              ...newBoards[sourceBoardIndex].columns[0],
-              tasks: newBoards[sourceBoardIndex].columns[0].tasks.filter(t => t.id !== taskId)
-            }]
-          };
-        }
-        
-     // 2. Add task to target board (INSIDE handleTaskDrop function)
-// 2. Add task to target board USING THE API RESPONSE
-const targetBoardIndex = newBoards.findIndex(b => b.id === targetBoardId);
-if (targetBoardIndex !== -1 && newBoards[targetBoardIndex].columns[0]) {
-  // Use the task returned from API (result) which has updated column_id
-  const updatedTask = {
-    ...result,
-    board_id: targetBoardId, // Ensure board_id is correct
-    user: result.user || null // Preserve user data
-  };
+   if (response.ok) {
+  console.log("✅ Task moved successfully:", result);
   
-  newBoards[targetBoardIndex] = {
-    ...newBoards[targetBoardIndex],
-    columns: [{
-      ...newBoards[targetBoardIndex].columns[0],
-      tasks: [...newBoards[targetBoardIndex].columns[0].tasks, updatedTask]
-    }]
-  };
-}
-        return newBoards;
-      });
-      
-      console.log("✅ Local state updated");
-    } else {
-      console.error("❌ Failed to move task. Error details:", result);
-      
-      // Show specific error message
-      if (result.errors && result.errors.length > 0) {
-        console.error("Validation errors:", result.errors.join(", "));
-        alert(`Cannot move task: ${result.errors.join(", ")}`);
-      }
+  // Update local state
+  setBoards(prevBoards => {
+    const newBoards = [...prevBoards];
+    
+    // 1. Remove task from source board
+    const sourceBoardIndex = newBoards.findIndex(b => b.id === sourceBoardId);
+    if (sourceBoardIndex !== -1 && newBoards[sourceBoardIndex].columns[0]) {
+      newBoards[sourceBoardIndex] = {
+        ...newBoards[sourceBoardIndex],
+        columns: [{
+          ...newBoards[sourceBoardIndex].columns[0],
+          tasks: newBoards[sourceBoardIndex].columns[0].tasks.filter(t => t.id !== taskId)
+        }]
+      };
     }
-  } catch (error) {
-    console.error("❌ Error moving task:", error);
-  }
-};
+    
+    // 2. Add task to target board USING THE API RESPONSE
+    const targetBoardIndex = newBoards.findIndex(b => b.id === targetBoardId);
+    if (targetBoardIndex !== -1 && newBoards[targetBoardIndex].columns[0]) {
+      // Use the task returned from API (result) which has updated column_id
+      const updatedTask = {
+        ...result,
+        board_id: targetBoardId, // Ensure board_id is correct
+        user: result.user || null // Preserve user data
+      };
+      
+      newBoards[targetBoardIndex] = {
+        ...newBoards[targetBoardIndex],
+        columns: [{
+          ...newBoards[targetBoardIndex].columns[0],
+          tasks: [...newBoards[targetBoardIndex].columns[0].tasks, updatedTask]
+        }]
+      };
+    }
+    
+    return newBoards;
+  });
+  
+  console.log("✅ Local state updated");
+  
+  // Force refresh to ensure data is in sync
+  fetchData();
+}
   const handleClearFilter = () => {
     setFilterUserId(null);
   };
