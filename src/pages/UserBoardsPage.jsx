@@ -169,26 +169,26 @@ const handleTaskDrop = async (dropData) => {
   
   console.log("Moving task:", {
     taskId,
-    fromColumn: sourceColumnId,
-    toColumn: targetColumnId,
     fromBoard: sourceBoardId,
-    toBoard: targetBoardId
+    toBoard: targetBoardId,
+    fromColumn: sourceColumnId,
+    toColumn: targetColumnId
   });
   
   try {
+    // FIX: Use the correct endpoint from your routes
     const response = await fetch(
-      `https://web-production-45cea.up.railway.app/api/v1/boards/${sourceBoardId}/columns/${sourceColumnId}/tasks/${taskId}`,
+      `https://web-production-45cea.up.railway.app/api/v1/boards/${sourceBoardId}/columns/${sourceColumnId}/tasks/${taskId}/move`,
       {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
-          task: { 
-            column_id: targetColumnId
-          } 
+          column_id: targetColumnId  // Send only column_id
         }),
       }
     );
     
+    // Rest of your code...
     console.log("API response status:", response.status);
     
     const result = await response.json();
