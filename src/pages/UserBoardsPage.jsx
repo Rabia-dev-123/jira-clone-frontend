@@ -166,7 +166,7 @@ const handleCreateTask = (taskData) => {
 const handleTaskDrop = async (dropData) => {
   let { taskId, sourceColumnId, targetColumnId, sourceBoardId, targetBoardId } = dropData;
   
-  console.log("Moving task between boards:", {
+  console.log("Moving task:", {
     taskId,
     fromBoard: sourceBoardId,
     toBoard: targetBoardId,
@@ -174,92 +174,101 @@ const handleTaskDrop = async (dropData) => {
     toColumn: targetColumnId
   });
   
-  // FIX: If moving to different board, use special endpoint
-  const isMovingBetweenBoards = sourceBoardId !== targetBoardId;
-  
   try {
-    let response;
+    // Use the standard update endpoint for ALL moves (both same board and different board)
+    // IMPORTANT: Use the CURRENT board where the task is located
+    const currentBoardId = sourceBoardId;
     
- if (isMovingBetweenBoards) {
-  // Use the existing move endpoint - it already handles board_id updates
-  response = await fetch(
-    `https://web-production-45cea.up.railway.app/api/v1/boards/${sourceBoardId}/columns/${sourceColumnId}/tasks/${taskId}/move`,
-    {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        column_id: targetColumnId
-        // Don't send board_id here - your move action already gets it from the column
-      }),
-    }
-  );
-} else {
-      // Moving within SAME board - use existing endpoint
-      response = await fetch(
-        `https://web-production-45cea.up.railway.app/api/v1/boards/${sourceBoardId}/columns/${sourceColumnId}/tasks/${taskId}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
-            task: { 
-              column_id: targetColumnId
-            } 
-          }),
-        }
-      );
-    }
+    const response = await fetch(
+      `https://web-production-45cea.up.railway.app/api/v1/boards/${currentBoardId}/columns/${sourceColumnId}/tasks/${taskId}`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          task: { 
+            column_id: targetColumnId
+          } 
+        }),
+      }
+    );
 
     console.log("API response status:", response.status);
     
-    const result = await response.json();
+    // Handle empty response
+    let result;
+    try {
+      result = await response.json();
+    } catch (jsonError) {
+      console.error("Failed to parse JSON:", jsonError);
+      // If response is empty but status is 200, assume success
+      if (response.ok) {
+        result = { id: taskId, column_id: targetColumnId };
+      } else {
+        throw new Error("Empty response from server");
+      }
+    }
+    
     console.log("API response body:", result);
     
-   if (response.ok) {
-  console.log("✅ Task moved successfully:", result);
-  
-  // Update local state
-  setBoards(prevBoards => {
-    const newBoards = [...prevBoards];
-    
-    // 1. Remove task from source board
-    const sourceBoardIndex = newBoards.findIndex(b => b.id === sourceBoardId);
-    if (sourceBoardIndex !== -1 && newBoards[sourceBoardIndex].columns[0]) {
-      newBoards[sourceBoardIndex] = {
-        ...newBoards[sourceBoardIndex],
-        columns: [{
-          ...newBoards[sourceBoardIndex].columns[0],
-          tasks: newBoards[sourceBoardIndex].columns[0].tasks.filter(t => t.id !== taskId)
-        }]
-      };
-    }
-    
-    // 2. Add task to target board USING THE API RESPONSE
-    const targetBoardIndex = newBoards.findIndex(b => b.id === targetBoardId);
-    if (targetBoardIndex !== -1 && newBoards[targetBoardIndex].columns[0]) {
-      // Use the task returned from API (result) which has updated column_id
-      const updatedTask = {
-        ...result,
-        board_id: targetBoardId, // Ensure board_id is correct
-        user: result.user || null // Preserve user data
-      };
+    if (response.ok) {
+      console.log("✅ Task moved successfully:", result);
       
-      newBoards[targetBoardIndex] = {
-        ...newBoards[targetBoardIndex],
-        columns: [{
-          ...newBoards[targetBoardIndex].columns[0],
-          tasks: [...newBoards[targetBoardIndex].columns[0].tasks, updatedTask]
-        }]
-      };
+      // Update local state
+      setBoards(prevBoards => {
+        const newBoards = [...prevBoards];
+        
+        // 1. Remove task from source board
+        const sourceBoardIndex = newBoards.findIndex(b => b.id === sourceBoardId);
+        if (sourceBoardIndex !== -1 && newBoards[sourceBoardIndex].columns[0]) {
+          newBoards[sourceBoardIndex] = {
+            ...newBoards[sourceBoardIndex],
+            columns: [{
+              ...newBoards[sourceBoardIndex].columns[0],
+              tasks: newBoards[sourceBoardIndex].columns[0].tasks.filter(t => t.id !== taskId)
+            }]
+          };
+        }
+        
+        // 2. Add task to target board
+        const targetBoardIndex = newBoards.findIndex(b => b.id === targetBoardId);
+        if (targetBoardIndex !== -1 && newBoards[targetBoardIndex].columns[0]) {
+          // Find the task in original source to preserve its data
+          const originalSourceBoard = prevBoards.find(b => b.id === sourceBoardId);
+          const originalTask = originalSourceBoard?.columns[0]?.tasks.find(t => t.id === taskId);
+          
+          const updatedTask = {
+            ...originalTask,
+            ...result,
+            board_id: targetBoardId, // Update board_id
+            column_id: targetColumnId, // Update column_id
+            user: result.user || originalTask?.user || null
+          };
+          
+          newBoards[targetBoardIndex] = {
+            ...newBoards[targetBoardIndex],
+            columns: [{
+              ...newBoards[targetBoardIndex].columns[0],
+              tasks: [...newBoards[targetBoardIndex].columns[0].tasks, updatedTask]
+            }]
+          };
+        }
+        
+        return newBoards;
+      });
+      
+      console.log("✅ Local state updated");
+    } else {
+      console.error("❌ Failed to move task. Error details:", result);
+      
+      if (result.errors && result.errors.length > 0) {
+        alert(`Cannot move task: ${result.errors.join(", ")}`);
+      }
     }
-    
-    return newBoards;
-  });
-  
-  console.log("✅ Local state updated");
-  
-  // Force refresh to ensure data is in sync
-  fetchData();
-}
+  } catch (error) {
+    console.error("❌ Error moving task:", error);
+    alert(`Error moving task: ${error.message}`);
+  }
+};
   const handleClearFilter = () => {
     setFilterUserId(null);
   };
