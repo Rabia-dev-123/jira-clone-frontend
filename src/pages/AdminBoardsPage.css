@@ -6,16 +6,21 @@
 
 .boards-area {
   flex: 1;
-  display: flex;
-  flex-wrap: wrap;
-  padding: 20px;
-   width: 260px;          /* same size as board cards */
-  flex-shrink: 0;
-  gap: 20px;
-  background: #f4f5f7;
-  overflow-y: auto;
-}
 
+  display: flex;
+  flex-wrap: nowrap;        /* ✅ NO wrapping */
+
+  flex-direction: row;
+
+  gap: 20px;
+  padding: 20px;
+
+  background: #f4f5f7;
+
+  height: 100vh;            /* ✅ Full height */
+  overflow-x: auto;         /* ✅ Horizontal scroll */
+  overflow-y: hidden;       /* ✅ No vertical scroll */
+}
 /* optional scrollbar style */
 .boards-area::-webkit-scrollbar {
   width: 6px;

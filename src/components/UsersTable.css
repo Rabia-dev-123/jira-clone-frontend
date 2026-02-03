@@ -16,11 +16,26 @@
   font-weight: 600;
 }
 
-/* Search bar */
-.search-bar {
+.admin-search-wrapper {
   display: flex;
-  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  border-radius: 6px;
+  width: 250px;
+  margin-bottom: 15px;
+}
 
+.admin-search-icon {
+  flex-shrink: 0;
+}
+
+.admin-search-bar {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 14px;
 }
 /* Add to your existing UsersTable.css */
 .role-select {

@@ -8,7 +8,7 @@
   transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
-  height: 450px;
+  height: 650px;
 }
 
 .board-card:hover {

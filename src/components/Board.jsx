@@ -129,10 +129,10 @@ export default function Board({ board, searchText, filterUserId, onTaskDrop }) {
       onDrop={handleDrop}
     >
       <div className="board-header">
-        <h3 className="board-title">{board.title}</h3>
+        <h3 className="board-title">{statusText}</h3>
         <div className="board-info">
-          <span className="board-status">{statusText}</span>
-          <span className="task-count">{filteredTasks.length} tasks</span>
+          <span className="board-status">{filteredTasks.length} tasks</span>
+          {/* <span className="task-count">{filteredTasks.length} tasks</span> */}
         </div>
       </div>
       

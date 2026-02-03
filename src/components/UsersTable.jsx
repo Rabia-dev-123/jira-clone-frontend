@@ -114,14 +114,31 @@ export default function UsersTable() {
     <div className="users-table-container">
       <h3>All Users</h3>
 
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search user..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
+   <div className="admin-search-wrapper">
+  <svg
+    className="admin-search-icon"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+  >
+    <path
+      d="M21 21L15.8 15.8M10.5 18C6.91 18 4 15.09 4 11.5C4 7.91 6.91 5 10.5 5C14.09 5 17 7.91 17 11.5C17 15.09 14.09 18 10.5 18Z"
+      stroke="#6B778C"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+
+  <input
+    type="text"
+    placeholder="Search user..."
+    className="admin-search-bar"
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+  />
+</div>
 
       <table className="users-table">
         <thead>

@@ -334,7 +334,7 @@ const handleTaskDrop = async (dropData) => {
   </div>
 
         {/* Active filter info */}
-       {filterUserId && (
+       {/* {filterUserId && (
     <div className="active-filter-info-wrapper">
       <div className="active-filter-info">
         <div className="active-filter-content">
@@ -348,7 +348,7 @@ const handleTaskDrop = async (dropData) => {
         </div>
       </div>
     </div>
-  )}
+  )} */}
 </div>
 
       {/* Main boards area */}
