@@ -19,7 +19,7 @@ const handleSubmit = async () => {
   setIsSubmitting(true);
 
   try {
-    const response = await fetch(`http://localhost:5000/api/v1/users/${user.id}`, {
+    const response = await fetch(`https://web-production-45cea.up.railway.app/api/v1/users/${user.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ 
